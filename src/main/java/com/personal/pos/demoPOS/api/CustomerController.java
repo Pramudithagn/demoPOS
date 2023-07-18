@@ -1,15 +1,21 @@
 package com.personal.pos.demoPOS.api;
 
 import com.personal.pos.demoPOS.dto.request.CustomerDto;
+import com.personal.pos.demoPOS.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/customer")
 public class CustomerController {
 
+    @Autowired
+    private CustomerService customerService;
+
     @PostMapping("/create") // http://localhost:8000/api/v1/customer/create (POST)
     public String save(@RequestBody CustomerDto dto){
-        return dto.toString();
+
+        return customerService.saveCustomer(dto);
     }
 
     @GetMapping("/{id}")
