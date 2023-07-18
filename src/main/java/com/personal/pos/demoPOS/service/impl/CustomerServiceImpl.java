@@ -31,36 +31,48 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String findCustomer(String id) {
+    public CustomerResponseDto findCustomer(String id) throws ClassNotFoundException {
        /* Optional<Customer> selectedCustomer = customerRepo.findById(id);
         if (selectedCustomer.isPresent()){
             return selectedCustomer.get().toString();
         }
         return null;*/
-            return customerRepo.findById(id).orElse(null).toString();
-            //return customerRepo.findById(id);
+        Customer c = customerRepo.findById(id).orElse(null);
+        if (c == null) {
+            throw new ClassNotFoundException("Not Found");
+        }
+        return new CustomerResponseDto(c.getId(), c.getName(), c.getAddress(), c.getSalary());
+
+        //return customerRepo.findById(id);
 
     }
 
     @Override
     public String updateCustomer(CustomerDto dto, String id) {
-        return null;
+        Customer c = customerRepo.findById(id).orElse(null);
+        if (null == c) return "Not found";
+        c.setName(dto.getName());
+        c.setAddress(dto.getAddress());
+        c.setSalary(dto.getSalary());
+        customerRepo.save(c); // update
+        return c.getName() + " was Updated!";
     }
 
     @Override
     public String deleteCustomer(String id) {
-        return null;
+
+        customerRepo.deleteById(id);
+        return id + " was deleted!";
     }
 
     @Override
-    public List<CustomerResponseDto> findAllCustomers()
-    {
+    public List<CustomerResponseDto> findAllCustomers() {
         List<CustomerResponseDto> dtoList = new ArrayList<>();
         List<Customer> list = customerRepo.findAll();
-        for (Customer c: list
+        for (Customer c : list
         ) {
             dtoList.add(new CustomerResponseDto(
-                    c.getId(),c.getName(),c.getAddress(),c.getSalary()
+                    c.getId(), c.getName(), c.getAddress(), c.getSalary()
             ));
         }
         return dtoList;
