@@ -1,9 +1,12 @@
 package com.personal.pos.demoPOS.api;
 
 import com.personal.pos.demoPOS.dto.request.CustomerDto;
+import com.personal.pos.demoPOS.dto.response.CustomerResponseDto;
 import com.personal.pos.demoPOS.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/customer")
@@ -20,7 +23,8 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public String findCustomer(@PathVariable String id){
-        return id+"-customer";
+
+        return customerService.findCustomer(id);
     }
 
     @PutMapping(value = "/modify", params = {"id"})
@@ -34,8 +38,9 @@ public class CustomerController {
     }
 
     @GetMapping("/list")
-    public String findAllCustomer(){
-        return "all customers";
+    public List<CustomerResponseDto> findAllCustomer(){
+
+        return customerService.findAllCustomers();
     }
 
 
