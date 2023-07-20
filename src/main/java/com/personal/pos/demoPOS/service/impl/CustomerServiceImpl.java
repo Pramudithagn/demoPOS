@@ -3,12 +3,14 @@ package com.personal.pos.demoPOS.service.impl;
 import com.personal.pos.demoPOS.dto.CustomerDto;
 import com.personal.pos.demoPOS.dto.request.CustomerRequestDto;
 import com.personal.pos.demoPOS.dto.response.CustomerResponseDto;
+import com.personal.pos.demoPOS.dto.response.paginate.PaginatedCustomerResponseDto;
 import com.personal.pos.demoPOS.entity.Customer;
 import com.personal.pos.demoPOS.repo.CustomerRepo;
 import com.personal.pos.demoPOS.service.CustomerService;
 import com.personal.pos.demoPOS.util.IdGenerator;
 import com.personal.pos.demoPOS.util.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
     public String saveCustomer(CustomerRequestDto dto) {
 
         CustomerDto cDto = new CustomerDto(idGenerator.generateId(10), dto.getName(), dto.getAddress(), dto.getSalary());
+
         return customerRepo.save(customerMapper.toCustomer(cDto)).getId()+ " Saved!";
     }
 
@@ -74,8 +77,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerResponseDto> findAllCustomers() {
-            return customerMapper.toCustomerResponseDtoList(customerRepo.findAll());
+    public PaginatedCustomerResponseDto findAllCustomers(
+            String searchText, int page, int size
+    ) {
+        // create method with a custom query=? (find data)
+        // create method with a custom query=? (count)
+        return new PaginatedCustomerResponseDto(
+                customerRepo.countCustomer(searchText),
+                customerMapper.toCustomerResponseDtoList(customerRepo.searchCustomer(
+                        searchText, PageRequest.of(page, size)
+                ))
+        );
 
 //        List<CustomerResponseDto> dtoList = new ArrayList<>();
 //        List<Customer> list = customerRepo.findAll();

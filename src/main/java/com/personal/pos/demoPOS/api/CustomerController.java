@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin //haven't configured
 @RequestMapping("/api/v1/customer")
 public class CustomerController {
 
@@ -64,14 +65,17 @@ public class CustomerController {
         );
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<StandardResponse> findAllCustomer(){
+    @GetMapping(value = "/list", params = {"searchText","page","size"})
+    public ResponseEntity<StandardResponse> findAllCustomer(
+            @RequestParam String searchText,
+            @RequestParam int page,
+            @RequestParam int size){
 
         return new ResponseEntity<>(
                 new StandardResponse(
                         200,
                         "Data List!",
-                        customerService.findAllCustomers()
+                        customerService.findAllCustomers(searchText, page, size)
                 ), HttpStatus.OK
         );
     }
