@@ -1,6 +1,6 @@
 package com.personal.pos.demoPOS.api;
 
-import com.personal.pos.demoPOS.dto.request.CustomerDto;
+import com.personal.pos.demoPOS.dto.request.CustomerRequestDto;
 import com.personal.pos.demoPOS.service.CustomerService;
 import com.personal.pos.demoPOS.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CustomerController {
     @PostMapping(value = "/create",
             consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}) // http://localhost:8000/api/v1/customer/create (POST)
-    public ResponseEntity<StandardResponse> save(@RequestBody CustomerDto dto){
+    public ResponseEntity<StandardResponse> save(@RequestBody CustomerRequestDto dto){
 
         return new ResponseEntity<>(
                 new StandardResponse(
@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/modify", params = {"id"})
-    public ResponseEntity<StandardResponse> updateCustomer(@RequestBody CustomerDto dto, @RequestParam String id){
+    public ResponseEntity<StandardResponse> updateCustomer(@RequestBody CustomerRequestDto dto, @RequestParam String id) throws ClassNotFoundException{
         return new ResponseEntity<>(
                 new StandardResponse(
                         201,

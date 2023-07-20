@@ -1,15 +1,14 @@
 package com.personal.pos.demoPOS.service;
 
-import com.personal.pos.demoPOS.dto.request.CustomerDto;
-import com.personal.pos.demoPOS.dto.response.CustomerResponseDto;
+import com.personal.pos.demoPOS.dto.request.CustomerRequestDto;
 
 import java.util.List;
 
 public interface CustomerService {
-        public String saveCustomer(CustomerDto dto);
-        public CustomerResponseDto findCustomer (String id) throws ClassNotFoundException;
-        public String updateCustomer(CustomerDto dto, String id);
+        public String saveCustomer(CustomerRequestDto dto);
+        public com.personal.pos.demoPOS.dto.response.CustomerResponseDto findCustomer (String id) throws ClassNotFoundException;
+        public String updateCustomer(CustomerRequestDto dto, String id) throws ClassNotFoundException;
         public String deleteCustomer(String id);
-        public List<CustomerResponseDto> findAllCustomers();
+        public List<com.personal.pos.demoPOS.dto.response.CustomerResponseDto> findAllCustomers();
     }
 

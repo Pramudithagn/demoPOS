@@ -1,11 +1,13 @@
 package com.personal.pos.demoPOS.service.impl;
 
-import com.personal.pos.demoPOS.dto.request.CustomerDto;
+import com.personal.pos.demoPOS.dto.CustomerDto;
+import com.personal.pos.demoPOS.dto.request.CustomerRequestDto;
 import com.personal.pos.demoPOS.dto.response.CustomerResponseDto;
 import com.personal.pos.demoPOS.entity.Customer;
 import com.personal.pos.demoPOS.repo.CustomerRepo;
 import com.personal.pos.demoPOS.service.CustomerService;
 import com.personal.pos.demoPOS.util.IdGenerator;
+import com.personal.pos.demoPOS.util.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +21,15 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepo customerRepo;
     @Autowired
     private IdGenerator idGenerator;
+    @Autowired
+    private CustomerMapper customerMapper;
+
 
     @Override
-    public String saveCustomer(CustomerDto dto) {
+    public String saveCustomer(CustomerRequestDto dto) {
 
-        Customer c1 = new Customer(
-                idGenerator.generateId(10), dto.getName(), dto.getAddress(), dto.getSalary()
-        );
-        customerRepo.save(c1);
-        return c1.getId() + " Saved!";
+        CustomerDto cDto = new CustomerDto(idGenerator.generateId(10), dto.getName(), dto.getAddress(), dto.getSalary());
+        return customerRepo.save(customerMapper.toCustomer(cDto)).getId()+ " Saved!";
     }
 
     @Override
@@ -48,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String updateCustomer(CustomerDto dto, String id) {
+    public String updateCustomer(CustomerRequestDto dto, String id) {
         Customer c = customerRepo.findById(id).orElse(null);
         if (null == c) return "Not found";
         c.setName(dto.getName());
