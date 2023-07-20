@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -39,25 +40,30 @@ public class CustomerServiceImpl implements CustomerService {
             return selectedCustomer.get().toString();
         }
         return null;*/
-        Customer c = customerRepo.findById(id).orElse(null);
-        if (c == null) {
+        Optional<Customer> byId = customerRepo.findById(id);
+        if (byId.isPresent()) {
+            return customerMapper.toCustomerResponseDto(byId.get());
+
+            }
             throw new ClassNotFoundException("Not Found");
+
+
+            //return customerRepo.findById(id);
+
         }
-        return new CustomerResponseDto(c.getId(), c.getName(), c.getAddress(), c.getSalary());
 
-        //return customerRepo.findById(id);
-
-    }
 
     @Override
-    public String updateCustomer(CustomerRequestDto dto, String id) {
-        Customer c = customerRepo.findById(id).orElse(null);
-        if (null == c) return "Not found";
-        c.setName(dto.getName());
-        c.setAddress(dto.getAddress());
-        c.setSalary(dto.getSalary());
-        customerRepo.save(c); // update
-        return c.getName() + " was Updated!";
+    public String updateCustomer(CustomerRequestDto dto, String id) throws ClassNotFoundException {
+            Optional<Customer> byId = customerRepo.findById(id);
+            if (byId.isPresent()){
+                byId.get().setName(dto.getName());
+                byId.get().setAddress(dto.getAddress());
+                byId.get().setSalary(dto.getSalary());
+                customerRepo.save(byId.get());
+                return byId.get().getName() + " was Updated!";
+            }
+            throw new ClassNotFoundException("Not Found");
     }
 
     @Override
@@ -69,14 +75,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerResponseDto> findAllCustomers() {
-        List<CustomerResponseDto> dtoList = new ArrayList<>();
-        List<Customer> list = customerRepo.findAll();
-        for (Customer c : list
-        ) {
-            dtoList.add(new CustomerResponseDto(
-                    c.getId(), c.getName(), c.getAddress(), c.getSalary()
-            ));
-        }
-        return dtoList;
+            return customerMapper.toCustomerResponseDtoList(customerRepo.findAll());
+
+//        List<CustomerResponseDto> dtoList = new ArrayList<>();
+//        List<Customer> list = customerRepo.findAll();
+//        for (Customer c : list
+//        ) {
+//            dtoList.add(new CustomerResponseDto(
+//                    c.getId(), c.getName(), c.getAddress(), c.getSalary()
+//            ));
+//        }
+//        return dtoList;
     }
 }
